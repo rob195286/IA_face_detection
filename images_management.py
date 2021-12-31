@@ -20,7 +20,7 @@ class Mood(Enum):
 
 
 picture_name = "Training_3908.jpg"
-file = direcotry_path + "images_with_mood_face\\train\\" + str(Mood.angry) + "\\" + picture_name
+file = direcotry_path + "images_with_mood\\train\\" + str(Mood.angry) + "\\" + picture_name
 img = cv2.imread(file)
 blank = np.zeros(shape=(512,512,3),dtype=np.int16)
 
