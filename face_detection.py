@@ -1,11 +1,8 @@
 import cv2 as cv
-from images_management import direcotry_path
+from images_management import direcotry_path, path_images_with_mood
 from mood_detection import get_mood
 
 
-img_name = 'g3.jpg'
-img_start_coord = 0
-img_end_coord = 0
 
 class PlaceEmoji():
     def __init__(self, img, classifier = None):
@@ -46,7 +43,8 @@ class PlaceEmoji():
                    rectangle_of_face['rectangle_start_coord_x']: rectangle_of_face['rectangle_end_coord_x']
                    ]
             mood = get_mood(face)
-            if (mood == 0):
+            if (mood == None):
+                print('pas de mood trouvé')
                 continue
             self.__faces_data.append({
                 'mood': mood,
@@ -68,9 +66,10 @@ class PlaceEmoji():
 
 
 if __name__ == "__main__" :
+    img_name = 'g3.jpg'
+    picture_name = "Training_3908.jpg"
     test_image = direcotry_path + '\\perso\\' + img_name
-    #test_image = cv.imread(test_image)
-    #test_image = change_to_gray_scale(test_image)
+
     pe = PlaceEmoji(test_image)
 
     cv.imshow("Faces found", pe.get_image_with_faces())

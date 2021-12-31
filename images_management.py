@@ -19,9 +19,8 @@ class Mood(Enum):
         return '{0}'.format(self.value)
 
 
-picture_name = "Training_3908.jpg"
-file = direcotry_path + "images_with_mood\\train\\" + str(Mood.angry) + "\\" + picture_name
-img = cv2.imread(file)
+path_images_with_mood = direcotry_path + "images_with_mood\\train\\" + str(Mood.angry) + "\\"
+img = cv2.imread(path_images_with_mood)
 blank = np.zeros(shape=(512,512,3),dtype=np.int16)
 
 def get_all_mood_pictures(mood : Mood):

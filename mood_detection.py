@@ -3,9 +3,8 @@ from images_management import direcotry_path
 import cv2 as cv
 
 def get_mood(img):
-    result = FER().detect_emotions(img)
-    result = result[0] if(len(result) > 0) else 0
-    return max(result['emotions'], key=result['emotions'].get) if(result != 0) else 0
+    r, _ = FER(mtcnn=True).top_emotion(img)
+    return r
 
 def get_moods(img):
     result = FER().detect_emotions(img)
