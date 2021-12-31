@@ -1,6 +1,6 @@
 import copy
 import cv2 as cv
-from images_management import direcotry_path, emoji_path, Mood
+from images_management import direcotry_path, get_emoji, resize_image
 from mood_detection import get_top_mood
 
 
@@ -38,14 +38,6 @@ class PlaceEmoji():
     def __change_to_gray_scale(self):
         return cv.cvtColor(self.__initial_img, cv.COLOR_BGR2GRAY)
 
-    def __get_emoji(self, mood: Mood):
-        return cv.imread(emoji_path + "\\" + str(mood) + ".PNG")
-
-    def __resize_image(self, img, new_coord: dict):
-        width = new_coord['rectangle_end_coord_x'] - new_coord['rectangle_start_coord_x']
-        height = new_coord['rectangle_end_coord_y'] - new_coord['rectangle_start_coord_y']
-        return cv.resize(img, (width, height))
-
     def __place_emoji(self):
         for face_data in self.__faces_data:
             rectangle_coord = face_data['face_coord']
@@ -53,7 +45,7 @@ class PlaceEmoji():
                        face_data['face_coord']['rectangle_start_coord_y']: face_data['face_coord']['rectangle_end_coord_y'],
                        face_data['face_coord']['rectangle_start_coord_x']: face_data['face_coord']['rectangle_end_coord_x']
                        ] \
-                = self.__resize_image(self.__get_emoji(face_data['mood']), rectangle_coord)
+                = resize_image(get_emoji(face_data['mood']), rectangle_coord)
 
     def __select_face_on_image(self):
         self.__faces_data = []
@@ -97,8 +89,9 @@ if __name__ == "__main__" :
 
     cv.imshow("Faces found", pe.get_image_with_faces())
     cv.waitKey(0)
-
+'''
     for f in pe.get_face_data():
         print(f['mood'])
         cv.imshow("Faces found", f['face'])
         cv.waitKey(0)
+'''
