@@ -25,7 +25,5 @@ def get_emoji(mood: Mood):
     return cv.imread(emoji_path + "\\" + str(mood) + ".PNG")
 
 
-def resize_image(img, new_coord: dict):
-    width = new_coord['rectangle_end_coord_x'] - new_coord['rectangle_start_coord_x']
-    height = new_coord['rectangle_end_coord_y'] - new_coord['rectangle_start_coord_y']
-    return cv.resize(img, (width, height))
+def resize_image(img, new_coord: tuple):
+    return cv.resize(img, new_coord)

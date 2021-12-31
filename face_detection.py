@@ -1,6 +1,6 @@
 import copy
 import cv2 as cv
-from images_management import direcotry_path, get_emoji, resize_image
+from images_management import get_emoji, resize_image, direcotry_path
 from mood_detection import get_top_mood
 
 
@@ -40,12 +40,13 @@ class PlaceEmoji():
 
     def __place_emoji(self):
         for face_data in self.__faces_data:
-            rectangle_coord = face_data['face_coord']
+            width = face_data['face_coord']['rectangle_end_coord_x'] - face_data['face_coord']['rectangle_start_coord_x']
+            height = face_data['face_coord']['rectangle_end_coord_y'] - face_data['face_coord']['rectangle_start_coord_y']
             self.__emojited_img[
                        face_data['face_coord']['rectangle_start_coord_y']: face_data['face_coord']['rectangle_end_coord_y'],
                        face_data['face_coord']['rectangle_start_coord_x']: face_data['face_coord']['rectangle_end_coord_x']
                        ] \
-                = resize_image(get_emoji(face_data['mood']), rectangle_coord)
+                = resize_image(get_emoji(face_data['mood']), (width, height))
 
     def __select_face_on_image(self):
         self.__faces_data = []
@@ -81,17 +82,4 @@ class PlaceEmoji():
 
 
 if __name__ == "__main__" :
-    img_name = 'g4.jpg'
-    #picture_name = "Training_3908.jpg"
-    test_image = direcotry_path + '\\Perso\\' + img_name
-
-    pe = PlaceEmoji(test_image)
-
-    cv.imshow("Faces found", pe.get_image_with_faces())
-    cv.waitKey(0)
-'''
-    for f in pe.get_face_data():
-        print(f['mood'])
-        cv.imshow("Faces found", f['face'])
-        cv.waitKey(0)
-'''
+    pass
