@@ -2,8 +2,10 @@ from fer import FER
 from images_management import direcotry_path
 import cv2 as cv
 
-def get_mood(img):
-    r, _ = FER(mtcnn=True).top_emotion(img)
+model = FER(mtcnn=True)
+
+def get_top_mood(img):
+    r, _ = model.top_emotion(img)
     return r
 
 def get_moods(img):
@@ -13,5 +15,5 @@ def get_moods(img):
 
 
 if __name__ == "__main__" :
-    path =  cv.imread(direcotry_path + 'perso\\bebe.png')
+    path =  cv.imread(direcotry_path + 'Perso\\bebe.png')
     print(get_moods(path))
