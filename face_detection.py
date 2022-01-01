@@ -21,7 +21,7 @@ class PlaceEmoji():
     def __draw_rectangle(self, draw_rectangle: bool):
         rectangle_detected = self.classifier.detectMultiScale(
             self.__initial_img,
-            scaleFactor=1.1,
+            scaleFactor=1.1, # Paramètre permettant de réduire
             minNeighbors=5,
             minSize=(30, 30)
         )
@@ -82,4 +82,14 @@ class PlaceEmoji():
 
 
 if __name__ == "__main__" :
-    pass
+    img_name = 'g2.jpg'
+    # picture_name = "Training_3908.jpg"
+    test_image = direcotry_path + 'Perso\\' + img_name
+
+    pe = PlaceEmoji(test_image)
+    result = pe.get_image_with_faces()
+
+    if (result.shape[0] > 900 or result.shape[1] > 1500):
+        result = resize_image(result, (1280, 760))
+    cv.imshow("Faces found", result)
+    cv.waitKey(0)
