@@ -7,16 +7,22 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--picture_path', dest='path', help='Chemin de la photo à analyser')
+parser.add_argument('-v', '--is_video', dest='is_video', default=False ,help='Indique s\'il faut faire l\'analyse d\'une vidéo ou d\'une image')
 args = parser.parse_args()
 
 
-test_image = args.path
+if(args.is_video):
+    pe = PlaceEmoji(None)
+    pe.play_video(args.path)
 
-pe = PlaceEmoji(test_image)
-result = pe.get_image_with_faces()
+else:
+    test_image = args.path
 
-if (result.shape[0] > 900 or result.shape[1] > 1500):
-    result = resize_image(result, (1280, 760))
+    pe = PlaceEmoji(test_image)
+    result = pe.get_image_with_faces()
 
-cv.imshow("Faces found", result)
-cv.waitKey(0)
+    if (result.shape[0] > 900 or result.shape[1] > 1500):
+        result = resize_image(result, (1280, 760))
+
+    cv.imshow("Faces found", result)
+    cv.waitKey(0)

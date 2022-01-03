@@ -2,7 +2,8 @@ import copy
 import cv2 as cv
 from images_management import get_emoji, resize_image, direcotry_path
 from mood_detection import get_top_mood
-
+from mask_detection import check_if_face_is_masked
+import face_recognition
 
 
 class PlaceEmoji():
@@ -19,9 +20,11 @@ class PlaceEmoji():
 
 
     def __draw_rectangle(self, draw_rectangle: bool):
+        # multi scale signifie que l'algo va passer plusieurs dois dans des sous régions
+        # afin de détecter des visages de taille variante.
         rectangle_detected = self.classifier.detectMultiScale(
             self.__initial_img,
-            scaleFactor=1.1, # Paramètre permettant de réduire
+            scaleFactor=1.1, # % de réduction de l'image
             minNeighbors=5,
             minSize=(30, 30)
         )
@@ -35,8 +38,8 @@ class PlaceEmoji():
                 'rectangle_end_coord_y' : y + h
             })
 
-    def __change_to_gray_scale(self):
-        return cv.cvtColor(self.__initial_img, cv.COLOR_BGR2GRAY)
+    def __change_to_gray_scale(self, img):
+        return cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
     def __place_emoji(self):
         for face_data in self.__faces_data:
@@ -56,10 +59,11 @@ class PlaceEmoji():
                    rectangle_of_face['rectangle_start_coord_y']: rectangle_of_face['rectangle_end_coord_y'],
                    rectangle_of_face['rectangle_start_coord_x']: rectangle_of_face['rectangle_end_coord_x']
                    ]
-            mood = get_top_mood(face)
-            if (mood == None):
+            if (get_top_mood(face) == None):
                 print('pas de mood trouvé')
                 continue
+            mood = get_top_mood(face)
+            #mood = 'mask' if(check_if_face_is_masked(face)) else get_top_mood(face)
             self.__faces_data.append({
                 'mood': mood,
                 'face': face,
@@ -79,10 +83,26 @@ class PlaceEmoji():
         self.__place_emoji()
         return self.__emojited_img
 
+    def play_video(self, video='test.mp4'):
+        cap = cv.VideoCapture(video)
+        while True:
+            _, frame = cap.read()  # prend une frame, la première valeur indique si elle a été prise, pas important pour nous.
+            rgb_frame = frame[:, :, ::-1]  # Convertis en RBG pour pouvoir être utilisé
+            face_locations = face_recognition.face_locations(rgb_frame)  # Trouve les visages dans l'image
+
+            for top, right, bottom, left in face_locations:
+                cv.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+            cv.imshow('Video', frame)
+            if cv.waitKey(25) == 13:  # Wait for Enter key to stop
+                break
+
 
 
 if __name__ == "__main__" :
-    img_name = 'g2.jpg'
+    p = PlaceEmoji( direcotry_path + 'Perso\\' + 'gm1.jpg')
+    p.play_video()
+    '''
+    img_name = 'gm1.jpg'
     # picture_name = "Training_3908.jpg"
     test_image = direcotry_path + 'Perso\\' + img_name
 
@@ -93,3 +113,4 @@ if __name__ == "__main__" :
         result = resize_image(result, (1280, 760))
     cv.imshow("Faces found", result)
     cv.waitKey(0)
+'''
