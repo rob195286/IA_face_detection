@@ -6,7 +6,7 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-p', '--picture_path', dest='path', default='images\\Perso\\g4.jpg', help='Chemin de la photo à analyser')
+parser.add_argument('-p', '--picture_path', dest='path', default='images\\Perso\\g1.jpg', help='Chemin de la photo à analyser')
 parser.add_argument('-v', '--is_video', dest='is_video', default=False, help='Indique s\'il faut faire l\'analyse d\'une vidéo ou d\'une image')
 args = parser.parse_args()
 

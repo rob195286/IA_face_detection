@@ -7,20 +7,20 @@ import face_recognition
 
 
 class PlaceEmoji():
-    def __init__(self, draw_rectangle : bool=False, classifier=None):
+    def __init__(self, draw_rectangle: bool=False, faces_recognition_classifier=None):
         self.__draw_rectangle = draw_rectangle
-        if(classifier is None):
-            self.classifier = cv.CascadeClassifier('Model/haarcascade_frontalface_default.xml')
+        if(faces_recognition_classifier is None):
+            self.faces_recognition_classifier = cv.CascadeClassifier('Model/haarcascade_frontalface_default.xml')
         else:
-            self.classifier = classifier
-        self.rectangles_coordinates = []
+            self.faces_recognition_classifier = faces_recognition_classifier
+        self.faces_picture_coordinates = []
         self.__faces_data = []
 
 
-    def __Draw_rectangle(self, draw_rectangle: bool, img):
+    def __Get_faces_coordinates(self, draw_rectangle: bool, img):
         # multi scale signifie que l'algo va passer plusieurs fois dans des sous régions
         #   afin de détecter des visages de taille variante.
-        rectangle_detected = self.classifier.detectMultiScale(
+        rectangle_detected = self.faces_recognition_classifier.detectMultiScale(
             img,
             scaleFactor=1.1, # % de réduction de la taille de l'image
             minNeighbors=5, # nbr min de rectangle voisin dans une section pour valider que c'est bien un visage
@@ -29,16 +29,16 @@ class PlaceEmoji():
         for (x, y, w, h) in rectangle_detected :
             if (draw_rectangle):
                 cv.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            self.rectangles_coordinates.append({
+            self.faces_picture_coordinates.append({
                 'rectangle_start_coord_x' : x,
                 'rectangle_start_coord_y' : y,
                 'rectangle_end_coord_x' : x + w,
                 'rectangle_end_coord_y' : y + h
             })
-    """
-    def __change_to_gray_scale(self, img):
+
+    def __Change_to_gray_scale(self, img):
         return cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    """
+
     def __Place_emoji(self, img):
         for face_data in self.__faces_data:
             width = face_data['face_coord']['rectangle_end_coord_x'] - face_data['face_coord']['rectangle_start_coord_x']
@@ -49,40 +49,38 @@ class PlaceEmoji():
                 ] \
                 = resize_image(get_emoji(face_data['mood']), (width, height))
 
-    def __Select_face_on_image(self, img):
+    def __Get_faces_data(self, img):
         self.__faces_data = []
-        #image_copy = self.__initial_img.copy()
-        image_copy = img
-        for rectangle_of_face in self.rectangles_coordinates:
-            face = image_copy[
-                   rectangle_of_face['rectangle_start_coord_y']: rectangle_of_face['rectangle_end_coord_y'],
-                   rectangle_of_face['rectangle_start_coord_x']: rectangle_of_face['rectangle_end_coord_x']
+        for faces_coordinates in self.faces_picture_coordinates:
+            face = img[
+                   faces_coordinates['rectangle_start_coord_y']: faces_coordinates['rectangle_end_coord_y'],
+                   faces_coordinates['rectangle_start_coord_x']: faces_coordinates['rectangle_end_coord_x']
                    ]
 
-            mood = get_top_mood(face)
+            mood = 'Mask' if(face_is_masked(face)) else get_top_mood(face)
             if (mood == None):
                 print('pas de mood trouvé')
                 continue
-            #mood = 'Mask' if(face_is_masked(face)) else get_top_mood(face)
+
             self.__faces_data.append({
                 'mood': mood,
                 'face': face,
-                'face_coord': rectangle_of_face
+                'face_coord': faces_coordinates
             })
 
     def Get_faces(self):
-        self.__Select_face_on_image()
+        self.__Get_faces_data()
         return [f['face'] for f in self.__faces_data]
 
     def Get_face_data(self):
-        self.__Select_face_on_image()
+        self.__Get_faces_data()
         return self.__faces_data
 
     def Get_image_with_faces(self, image):
         img = cv.imread(image)
         img_with_rectangle = copy.deepcopy(img)
-        self.__Draw_rectangle(self.__draw_rectangle, img_with_rectangle)
-        self.__Select_face_on_image(img_with_rectangle)
+        self.__Get_faces_coordinates(self.__draw_rectangle, img_with_rectangle)
+        self.__Get_faces_data(img_with_rectangle)
         self.__Place_emoji(img)
         return img
 

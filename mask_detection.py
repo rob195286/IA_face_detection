@@ -15,7 +15,6 @@ model = load_model("Model\\" + "model.h5")
 
 def face_is_masked(img, confidence = 0.8):
     image = img.copy()
-
     blob = cv2.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0)) # un blob est une image qui a été préprocessé, préparer pour travailler dessus
     net.setInput(blob)
     detections = net.forward()
