@@ -10,12 +10,11 @@ class PlaceEmoji():
     def __init__(self, draw_rectangle: bool=False, faces_recognition_classifier=None):
         self.__draw_rectangle = draw_rectangle
         if(faces_recognition_classifier is None):
-            self.faces_recognition_classifier = cv.CascadeClassifier('Model/haarcascade_frontalface_default.xml')
+            self.faces_recognition_classifier = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_default.xml')
         else:
             self.faces_recognition_classifier = faces_recognition_classifier
         self.faces_picture_coordinates = []
         self.__faces_data = []
-
 
     def __Get_faces_coordinates(self, draw_rectangle: bool, img):
         # multi scale signifie que l'algo va passer plusieurs fois dans des sous régions
@@ -77,24 +76,31 @@ class PlaceEmoji():
         return self.__faces_data
 
     def Get_image_with_faces(self, image):
-        img = cv.imread(image)
+        if(type(image) == type('')):
+            img = cv.imread(image)
+        else:
+            img = image
         img_with_rectangle = copy.deepcopy(img)
         self.__Get_faces_coordinates(self.__draw_rectangle, img_with_rectangle)
         self.__Get_faces_data(img_with_rectangle)
         self.__Place_emoji(img)
         return img
 
-    def Play_video(self, video='test.mp4'):
+    def Play_video(self, with_emoji=False, video=0):
         cap = cv.VideoCapture(video)
         while True:
             _, frame = cap.read()  # prend une frame, la première valeur indique si elle a été prise, pas important pour nous.
-            rgb_frame = frame[:, :, ::-1]  # Convertis en RBG pour pouvoir être utilisé
-            face_locations = face_recognition.face_locations(rgb_frame)  # Trouve les visages dans l'image
+            if(with_emoji):
+                frame = self.Get_image_with_faces(frame)
+            else:
+                rgb_frame = frame[:, :, ::-1]  # Convertis en RBG pour pouvoir être utilisé
+                face_locations = face_recognition.face_locations(rgb_frame)  # Trouve les visages dans l'image
 
-            for top, right, bottom, left in face_locations:
-                cv.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+                for top, right, bottom, left in face_locations:
+                    cv.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+
             cv.imshow('Video', frame)
-            if cv.waitKey(25) == 13:  # Wait for Enter key to stop
+            if cv.waitKey(25) == 13:  # Wait for Enter key to stop (espace)
                 break
 
 

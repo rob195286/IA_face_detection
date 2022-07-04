@@ -5,7 +5,7 @@ from math import sin, cos, radians, degrees
 
 im = cv.imread('images\\Perso\\r1.jpg')
 
-model = cv.CascadeClassifier('Model\\' + 'haarcascade_eye.xml')
+model = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_eye.xml')
 
 
 def Rotation2(img):
