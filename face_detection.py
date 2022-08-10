@@ -1,7 +1,7 @@
 import copy
 import cv2 as cv
 from fer import FER
-from images_management import get_emoji, direcotry_path
+from images_management import get_emoji, direcotry_path, resize_image
 from mood_detection import get_top_mood
 from mask_detection import face_is_masked
 import face_recognition
