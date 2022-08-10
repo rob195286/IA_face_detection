@@ -6,7 +6,6 @@ from tensorflow.keras.models import load_model
 import numpy as np
 
 
-
 prototxtPath = "Model\\" + "deploy.prototxt"
 weightsPath = "Model\\" + "res10_300x300_ssd_iter_140000.caffemodel"
 net = cv.dnn.readNet(prototxtPath, weightsPath)
@@ -14,6 +13,12 @@ net = cv.dnn.readNet(prototxtPath, weightsPath)
 model = load_model("Model\\" + "model.h5")
 
 def face_is_masked(img, confidence = 0.8):
+    """
+    Permet de renvoyer "True" si le visages à un masque, "False" sinon.
+    :param img: Image contenant le visage à analyser.
+    :param confidence: Niveau de confiance minimum pour renvoyer "True" en %.
+    :return: "True" si le visage à un masque, "False" sinon.
+    """
     image = img.copy()
     blob = cv.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0)) # un blob est une image qui a été préprocessé, préparer pour travailler dessus
     net.setInput(blob)
@@ -29,6 +34,7 @@ def face_is_masked(img, confidence = 0.8):
             face = np.expand_dims(face, axis=0)
             (mask, withoutMask) = model.predict(face)[0]
             return True if mask > withoutMask else False
+
 
 
 if __name__ == "__main__" :
