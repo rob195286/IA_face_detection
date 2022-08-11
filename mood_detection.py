@@ -1,4 +1,4 @@
-from images_management import direcotry_path
+from images_management import directory_path
 import cv2 as cv
 
 
@@ -14,5 +14,5 @@ def get_top_mood(img, model):
 
 
 if __name__ == "__main__" :
-    path =  cv.imread(direcotry_path + 'Perso\\bebe.png')
+    path =  cv.imread(directory_path + 'Perso\\bebe.png')
 
