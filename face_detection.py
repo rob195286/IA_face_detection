@@ -102,6 +102,7 @@ class PlaceEmoji():
         while True:
             ret, frame = cap.read()  # frame = image à un instant t de la caméra, ret = si la caméra est activé/connecté.
             if not ret:
+                print("-----------------------------------------------------------------------------------------")
                 print("Caméra introuvable ou non branchée")
                 break
             #----------------------------------------------------------------------------  La partie ci-dessous fait le placement d'émoji comme sur une image classique
@@ -130,8 +131,8 @@ if __name__ == "__main__" :
     # picture_name = "Training_3908.jpg"
     test_image = direcotry_path + 'Perso\\' + img_name
 
-    pe = PlaceEmoji(test_image)
-    result = pe.Get_image_with_faces()
+    pe = PlaceEmoji()
+    result = pe.Get_image_with_faces(test_image)
 
     if (result.shape[0] > 900 or result.shape[1] > 1500):
         result = resize_image(result, (1280, 760))
