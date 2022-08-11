@@ -1,0 +1,6 @@
+numpy
+tensorflow
+opencv-python==4.5.5.64
+fer
+cmake
+face_recognition
