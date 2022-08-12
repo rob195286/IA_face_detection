@@ -1,7 +1,7 @@
+from math import degrees
+
 import cv2 as cv
 import numpy as np
-from math import sin, cos, radians, degrees
-
 
 im = cv.imread('images\\Perso\\r1.jpg')
 
@@ -41,8 +41,8 @@ def Rotation2(img):
         R_eye_x, R_eye_y = R_eye
         print('L_eye_x :', L_eye_x)
         print('L_eye_y :', L_eye_y)
-        print(' R_eye_x, : ',  R_eye_x)
-        print(' R_eye_y, : ',  R_eye_y)
+        print(' R_eye_x, : ', R_eye_x)
+        print(' R_eye_y, : ', R_eye_y)
 
         if L_eye_y > R_eye_y:
             triangle_point = (R_eye_x, L_eye_y)
@@ -73,9 +73,10 @@ def Rotation(img):
         """
     (ex, ey, ew, eh) = model.detectMultiScale(img)[2]
     cv.rectangle(img, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
-    print( model.detectMultiScale(img))
+    print(model.detectMultiScale(img))
     cv.imshow("Faces found", img)
     cv.waitKey(0)
+
 
 def Rotation3(img):
     detected_face_toGray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -108,7 +109,6 @@ def Rotation3(img):
         cv.imshow("Faces found", img)
         cv.waitKey(0)
 
-
         if L_eye_y > R_eye_y:
             triangle_point = (R_eye_x, L_eye_y)
             direction = -1  # Rotate clockwise (antitrigo)
@@ -122,8 +122,7 @@ def Rotation3(img):
         print(' R_eye_y, : ', R_eye_y)
 
 
-
-if __name__ == "__main__" :
-    #print(Rotation2(im))
-    #Rotation(im)
+if __name__ == "__main__":
+    # print(Rotation2(im))
+    # Rotation(im)
     Rotation3(im)

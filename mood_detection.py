@@ -1,5 +1,6 @@
-from images_management import directory_path
 import cv2 as cv
+
+from images_management import directory_path
 
 
 def get_top_mood(img, model):
@@ -13,6 +14,5 @@ def get_top_mood(img, model):
     return r
 
 
-if __name__ == "__main__" :
-    path =  cv.imread(directory_path + 'Perso\\bebe.png')
-
+if __name__ == "__main__":
+    path = cv.imread(directory_path + 'Perso\\bebe.png')
