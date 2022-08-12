@@ -11,14 +11,14 @@ from mood_detection import get_top_mood
 
 class PlaceEmoji():
     def __init__(self, faces_recognition_classifier=None):
-        if (faces_recognition_classifier is None):
+        if faces_recognition_classifier is None:
             self.faces_recognition_classifier = cv.CascadeClassifier(
                 cv.data.haarcascades + 'haarcascade_frontalface_default.xml')  # Model pour reconnaître plusieurs viages.
         else:
             self.faces_recognition_classifier = faces_recognition_classifier
         self.__faces_data = []  # Liste qui contiendra sous forme de dictionnaire l'ensemble des données liés aux différentes images trouvées.
 
-    def __Get_faces_data(self, img, with_best_emotion_model):
+    def __get_faces_data(self, img, with_best_emotion_model):
         """
         Récupère les données à partir de l'image fournis en entrée.
         :param img: Image d'où on veut récupérer les info concernant les visages.
@@ -49,8 +49,7 @@ class PlaceEmoji():
                    x: x + w]  # Récupère, à partir des coordonnées x|y, les visages de l'image passé en entrée "img".
             mood = 'Mask' if (face_is_masked(face)) else get_top_mood(face,
                                                                       emotion_model)  # Commence par détecter si le visage est masqué, sinon détecte son émotion.
-            if (
-                    mood == None):  # Ignore les coordonnées qui ne sont pas un visage dans le cas où ce n'est ni un visage masqué, ni un visage avec des émotions.
+            if mood is None:  # Ignore les coordonnées qui ne sont pas un visage dans le cas où ce n'est ni un visage masqué, ni un visage avec des émotions.
                 print('pas de mood trouvé')
                 continue
 
@@ -60,7 +59,7 @@ class PlaceEmoji():
                 'face_coord': faces_coordinates  # Les coordonnées du visage.
             })
 
-    def __Place_emoji(self, img):
+    def __place_emoji(self, img):
         """
         Place les émojis sur l'image fournie à partir des données receuillis précédements par la fonction "__Get_faces_data".
         :param img: Image où l'on veut y placer les émojis.
@@ -75,16 +74,16 @@ class PlaceEmoji():
             width = faces_x1_point - faces_x2_point
             height = faces_y1_point - faces_y2_point
             img[faces_y2_point: faces_y1_point, faces_x2_point: faces_x1_point] = get_emoji(face_data['mood'], (
-            width, height))  # Récupère l'émoji correcpondante au visage et le remplace dans l'image.
+                width, height))  # Récupère l'émoji correcpondante au visage et le remplace dans l'image.
 
-    def Get_faces(self):
+    def get_faces(self):
         """
         Retourne les visages détectés.
         :return: Une liste d'images correspondant aux visages trouvés par le modèle.
         """
         return [f['face'] for f in self.__faces_data]
 
-    def Get_image_with_faces(self, image, with_best_emotion_model=True):
+    def get_image_with_faces(self, image, with_best_emotion_model=True):
         """
         Retourne l'image fourni en entrée avec les émoji placé dessus.
         :param image: Image à analyser et où l'on veut placer les émoji.
@@ -92,17 +91,17 @@ class PlaceEmoji():
             Si oui il est lent mais efficace (donc pas utilisable pour la vidéo), si non, il est rapide pas assez efficace sur des images.
         :return: L'image avec les émojis placées à l'endroit où se trouve les visages.
         """
-        if (type(image) == type('')):
+        if type(image) == type(''):
             image = cv.imread(image)
         img_with_rectangle = copy.deepcopy(
             image)  # Copie l'image pour pouvoir faire toutes les opérations sans affecter celle-ci.
-        self.__Get_faces_data(img_with_rectangle,
+        self.__get_faces_data(img_with_rectangle,
                               with_best_emotion_model)  # Récupère et stocke dans une liste l'ensemble des info lié aux visages trouvés.
-        self.__Place_emoji(
+        self.__place_emoji(
             image)  # Place les émoji sur l'image fourni grâce aux informations receuillies par al fonction au dessus.
         return image
 
-    def Play_video(self, with_emoji=True, video=0):
+    def play_video(self, with_emoji=True, video=0):
         """
         Permet de faire la même chose que sur une image mais via les frame de la caméra.
         :param with_emoji: Permet de choisir si on veut placer des émoji sur l'image ou un carré rouge sur le visage.
@@ -116,8 +115,8 @@ class PlaceEmoji():
                 break
             # ----------------------------------------------------------------------------  La partie ci-dessous fait le placement d'émoji comme sur une image classique
             if (
-            with_emoji):  # Permet de sélectionner l'option de placement d'émoji où dans le cas contraire d'un carré rouge.
-                frame = self.Get_image_with_faces(frame, False)
+                    with_emoji):  # Permet de sélectionner l'option de placement d'émoji où dans le cas contraire d'un carré rouge.
+                frame = self.get_image_with_faces(frame, False)
             # ----------------------------------------------------------------------------  La partie ci-dessous créer un carré rouge autour du visage (au cas où ce serait trop lent de faire le placement emoji)
             else:
                 rgb_frame = frame[:, :, ::-1]  # Convertis en RBG pour pouvoir être utilisé
@@ -141,9 +140,9 @@ if __name__ == "__main__":
     test_image = directory_path + 'Perso\\' + img_name
 
     pe = PlaceEmoji(test_image)
-    result = pe.Get_image_with_faces()
+    result = pe.get_image_with_faces()
 
-    if (result.shape[0] > 900 or result.shape[1] > 1500):
+    if result.shape[0] > 900 or result.shape[1] > 1500:
         result = resize_image(result, (1280, 760))
     cv.imshow("Faces found", result)
     cv.waitKey(0)
