@@ -103,8 +103,7 @@ class PlaceEmoji():
             ret, frame = cap.read()  # frame = image à un instant t de la caméra, ret = si la caméra est activé/connecté.
             if not ret:
                 print("-----------------------------------------------------------------------------------------")
-                print("Caméra introuvable ou non branchée")
-                break
+                raise Exception("Caméra introuvable ou non branchée")
             #----------------------------------------------------------------------------  La partie ci-dessous fait le placement d'émoji comme sur une image classique
             if(with_emoji): # Permet de sélectionner l'option de placement d'émoji où dans le cas contraire d'un carré rouge.
                 frame = self.Get_image_with_faces(frame, False)
@@ -119,7 +118,6 @@ class PlaceEmoji():
             cv.imshow('Video', frame)
             if cv.waitKey(25) == 13:  # Wait for Enter key to stop (espace)
                 break
-
 
 
 if __name__ == "__main__" :
