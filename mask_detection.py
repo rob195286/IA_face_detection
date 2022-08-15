@@ -1,11 +1,10 @@
 import cv2 as cv
 import numpy as np
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
-
 from images_management import directory_path
+
 
 prototxtPath = "Model\\" + "deploy.prototxt" # config du réseau
 weightsPath = "Model\\" + "res10_300x300_ssd_iter_140000.caffemodel"# modèle pré-entrainé permettant de charger les poids du réseau
@@ -23,7 +22,7 @@ def face_is_masked(img, confidence=0.8):
     """
     image = img.copy()
     blob = cv.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0)) # un blob est une image qui a été préprocessé, préparer pour travailler dessus
-    net.setInput(blob) # passe l'image préprocessé au réesau.
+    net.setInput(blob) # passe l'image préprocessé au réseau.
     detections = net.forward() # exécute un passage avant en calcul la sortie de chaque couche intermédiaire
 
     for i in range(0, detections.shape[2]):
@@ -39,8 +38,7 @@ def face_is_masked(img, confidence=0.8):
 
 
 if __name__ == "__main__":
-    img_name = '0_0_0 copy 5.jpg'
-    test_image = directory_path + 'Mask\\with_mask\\' + img_name
+    test_image = directory_path + 'Mask\\with_mask\\' + '0_0_0 copy 5.jpg'
     result = face_is_masked(cv.imread(test_image))
     print(result)
 
