@@ -2,6 +2,8 @@ import os
 
 import cv2 as cv
 
+from rotation import rotate_image
+
 directory_path = os.getcwd() + "\images\\"
 emoji_path = directory_path + "Emoji\\"
 
@@ -17,14 +19,14 @@ emoji_img = {
 }
 
 
-def get_emoji(mood: str, new_size: tuple):
+def get_emoji(mood: str, new_size: tuple, new_angle_to_rotate):
     """
     Récupère à partir du dictionnaire "emoji_img" l'image de l'émoji correspondant.
     :param mood: String de l'émotion dont on veut en récupérer l'émoji (7 émotions + le masque).
     :param new_size: Nouvelle dimension que l'émoji doit avoir pour correspondre à la tailel du visage.
     :return: L'émoji correspondante, redimensionnée.
     """
-    return resize_image(emoji_img[mood], new_size)
+    return rotate_image(resize_image(emoji_img[mood], new_size), new_angle_to_rotate)
 
 
 def resize_image(img, new_coord: tuple):

@@ -7,6 +7,7 @@ from fer import FER
 from images_management import get_emoji, directory_path, resize_image
 from mask_detection import face_is_masked
 from mood_detection import get_top_mood
+from rotation import find_rotation_angle
 
 
 class PlaceEmoji():
@@ -34,8 +35,7 @@ class PlaceEmoji():
             minNeighbors=5,  # Nombre min. de rectangle voisin dans une section pour valider que c'est bien un visage.
             minSize=(30, 30)  # Taille min du rectangle.
         )
-        emotion_model = FER(
-            mtcnn=with_best_emotion_model)  # Model qui permet de reconnaître l'émotion d'un seul visage.
+        emotion_model = FER(mtcnn=with_best_emotion_model)  # Model qui permet de reconnaître l'émotion d'un seul visage.
         # Récupère à partir du modèle les coodonnées des visages détectés, où x|y sont les coordonnées du premier point
         #       du rectangle, et w|h (width et height) sont les distances par rapport à ces deux points.
         for (x, y, w, h) in rectangle_detected:
@@ -45,10 +45,10 @@ class PlaceEmoji():
                 'rectangle_end_coord_x': x + w,
                 'rectangle_end_coord_y': y + h
             }
-            face = img[y: y + h,
-                   x: x + w]  # Récupère, à partir des coordonnées x|y, les visages de l'image passé en entrée "img".
-            mood = 'Mask' if (face_is_masked(face)) else get_top_mood(face,
-                                                                      emotion_model)  # Commence par détecter si le visage est masqué, sinon détecte son émotion.
+            face = img[y: y + h, x: x + w]  # Récupère, à partir des coordonnées x|y, les visages de l'image passé en entrée "img".
+            rotation_angle = find_rotation_angle(face)
+            rotation_angle = 0 if (rotation_angle > 60) else rotation_angle
+            mood = 'Mask' if (face_is_masked(face)) else get_top_mood(face, emotion_model)  # Commence par détecter si le visage est masqué, sinon détecte son émotion.
             if mood is None:  # Ignore les coordonnées qui ne sont pas un visage dans le cas où ce n'est ni un visage masqué, ni un visage avec des émotions.
                 print('pas de mood trouvé')
                 continue
@@ -56,7 +56,8 @@ class PlaceEmoji():
             self.__faces_data.append({  # Liste de visages détectés sous forme de dictionnaires contenants :
                 'mood': mood,  # L'émotion du visages détectée.
                 'face': face,  # Le visages sous forme d'image détecté.
-                'face_coord': faces_coordinates  # Les coordonnées du visage.
+                'face_coord': faces_coordinates,  # Les coordonnées du visage.
+                'rotation_angle': rotation_angle
             })
 
     def __place_emoji(self, img):
@@ -73,8 +74,8 @@ class PlaceEmoji():
             # Récupère les dimensions de ce visage afin de pour redimensionner l'émoji à la taille correcte.
             width = faces_x1_point - faces_x2_point
             height = faces_y1_point - faces_y2_point
-            img[faces_y2_point: faces_y1_point, faces_x2_point: faces_x1_point] = get_emoji(face_data['mood'], (
-                width, height))  # Récupère l'émoji correcpondante au visage et le remplace dans l'image.
+            emoji = get_emoji(face_data['mood'], (width, height), face_data['rotation_angle'])  # Récupère l'émoji correspondante au visage.
+            img[faces_y2_point: faces_y1_point, faces_x2_point: faces_x1_point] = emoji # Remplace dans l'image contenant un visages par une émoji.
 
     def get_faces(self):
         """
@@ -115,7 +116,7 @@ class PlaceEmoji():
                 raise Exception("Caméra introuvable ou non branchée")
             #----------------------------------------------------------------------------  La partie ci-dessous fait le placement d'émoji comme sur une image classique
             if(with_emoji): # Permet de sélectionner l'option de placement d'émoji où dans le cas contraire d'un carré rouge.
-                frame = self.Get_image_with_faces(frame, False)
+                frame = self.get_image_with_faces(frame, False)
             #----------------------------------------------------------------------------  La partie ci-dessous créer un carré rouge autour du visage (au cas où ce serait trop lent de faire le placement emoji)
             else:
                 rgb_frame = frame[:, :, ::-1]  # Convertis en RBG pour pouvoir être utilisé
