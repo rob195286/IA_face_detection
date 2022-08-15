@@ -46,13 +46,12 @@ class PlaceEmoji():
                 'rectangle_end_coord_y': y + h
             }
             face = img[y: y + h, x: x + w]  # Récupère, à partir des coordonnées x|y, les visages de l'image passé en entrée "img".
-            rotation_angle = find_rotation_angle(face)
-            rotation_angle = 0 if (rotation_angle > 60) else rotation_angle
             mood = 'Mask' if (face_is_masked(face)) else get_top_mood(face, emotion_model)  # Commence par détecter si le visage est masqué, sinon détecte son émotion.
             if mood is None:  # Ignore les coordonnées qui ne sont pas un visage dans le cas où ce n'est ni un visage masqué, ni un visage avec des émotions.
-                print('pas de mood trouvé')
+                #print('pas de mood trouvé')
                 continue
-
+            rotation_angle = find_rotation_angle(face)
+            rotation_angle = 0 if (rotation_angle > 60) else rotation_angle
             self.__faces_data.append({  # Liste de visages détectés sous forme de dictionnaires contenants :
                 'mood': mood,  # L'émotion du visages détectée.
                 'face': face,  # Le visages sous forme d'image détecté.

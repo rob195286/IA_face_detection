@@ -6,9 +6,9 @@ from face_detection import PlaceEmoji
 from images_management import resize_image
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-p', '--picture_path', dest='path', default='images\\Perso\\gm3.jpg',
+parser.add_argument('-p', '--picture_path', dest='path', default='images\\Perso\\g5.jpg',
                     help='Chemin de la photo à analyser')
-parser.add_argument('-v', '--is_video', dest='is_video', default=True,
+parser.add_argument('-v', '--is_video', dest='is_video', default=False,
                     help='Indique s\'il faut faire l\'analyse d\'une vidéo ou d\'une image')
 args = parser.parse_args()
 

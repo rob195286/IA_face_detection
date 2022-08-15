@@ -23,7 +23,7 @@ def get_emoji(mood: str, new_size: tuple, new_angle_to_rotate):
     """
     Récupère à partir du dictionnaire "emoji_img" l'image de l'émoji correspondant.
     :param mood: String de l'émotion dont on veut en récupérer l'émoji (7 émotions + le masque).
-    :param new_size: Nouvelle dimension que l'émoji doit avoir pour correspondre à la tailel du visage.
+    :param new_size: Nouvelle dimension que l'émoji doit avoir pour correspondre à la taille du visage.
     :return: L'émoji correspondante, redimensionnée.
     """
     return rotate_image(resize_image(emoji_img[mood], new_size), new_angle_to_rotate)
