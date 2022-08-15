@@ -1,4 +1,4 @@
-from math import atan
+from math import atan, degrees
 
 import cv2 as cv
 
@@ -13,7 +13,7 @@ def find_rotation_angle(img):
         eye_1 = eyes[0]
         eye_2 = eyes[1]
 
-        # Detect which eye is Left or Right based on position x
+        # Détecte lequel est l'oeil de droite et de gauche.
         if eye_1[0] < eye_2[0]:
             L_eye = eye_1
             R_eye = eye_2
@@ -26,16 +26,14 @@ def find_rotation_angle(img):
         left_eye_center = (x + w // 2, y + h // 2)
         right_eye_center = (x2 + w2 // 2, y2 + h2 // 2)
 
-        rotation = atan((left_eye_center[1] - right_eye_center[1]) / (left_eye_center[0] - right_eye_center[0]))
-        #cv.circle(img, left_eye_center, 1, (255, 0, 0), 4)
-       # cv.circle(img, right_eye_center, 1, (255, 0, 0), 4)
-        return -int(rotation*100)
+        rotation = degrees(atan((left_eye_center[1] - right_eye_center[1]) / (left_eye_center[0] - right_eye_center[0])))
+        return -int(rotation)
     return 0
 
 def rotate_image(img, angle : int):
     h, w = img.shape[:2]
-    M = cv.getRotationMatrix2D(center=(w / 2, h / 2), angle=angle, scale=1.0)
-    return cv.warpAffine(img, M, (w, h))
+    M = cv.getRotationMatrix2D(center=(w / 2, h / 2), angle=angle, scale=1.0) # Récupère la transformation affine.
+    return cv.warpAffine(img, M, (w, h)) # Applique cette transformation matricielle sur l'image.
 
 
 

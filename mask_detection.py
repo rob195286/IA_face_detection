@@ -23,7 +23,7 @@ def face_is_masked(img, confidence=0.8):
     image = img.copy()
     blob = cv.dnn.blobFromImage(image, 1.0, (300, 300), (104.0, 177.0, 123.0)) # un blob est une image qui a été préprocessé, préparer pour travailler dessus
     net.setInput(blob) # passe l'image préprocessé au réseau.
-    detections = net.forward() # exécute un passage avant en calcul la sortie de chaque couche intermédiaire
+    detections = net.forward() # exécute un passage avant en calcul la sortie de chaque couche intermédiaire.
 
     for i in range(0, detections.shape[2]):
         conf = detections[0, 0, i, 2] # % de confiance actuel que c'est un visage.
