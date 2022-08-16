@@ -1,8 +1,14 @@
 # IA_face_detection
 ## Installation
-Pour pour faire fonctionner le projet, il est nécessaire d'avoir les librairies suivantes :
-  * opencv -> https://docs.opencv.org/4.x/index.html.
-  * FER -> https://github.com/justinshenk/fer#installation.
+Pour pour faire initialiser le projet, installer les requirements.
+
+Les bibiliothèques utiliséés sont :
+* numpy
+* tensorflow
+* opencv-python==4.5.5.64
+* fer
+* cmake
+* face_recognition
 
 ## Utilisation
 La façon d'utiliser le projet se fait via une ligne de commande en lancant le fichier __main__.py et en fournissant le chemin où est stocké l'image à analyser. 
