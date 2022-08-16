@@ -51,7 +51,7 @@ class PlaceEmoji():
                 #print('pas de mood trouvé')
                 continue
             rotation_angle = find_rotation_angle(face)
-            rotation_angle = 0 if (rotation_angle > 60) else rotation_angle
+            rotation_angle = 0 if (rotation_angle > 80) else rotation_angle
             self.__faces_data.append({  # Liste de visages détectés sous forme de dictionnaires contenants :
                 'mood': mood,  # L'émotion du visages détectée.
                 'face': face,  # Le visages sous forme d'image détecté.

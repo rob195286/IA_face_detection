@@ -22,7 +22,7 @@ def find_rotation_angle(img):
             R_eye = eye_1
         (x, y, w, h) = L_eye
         (x2, y2, w2, h2) = R_eye
-        # x -> horizontal et y vertical. Changé y fait descendre monté et en x va de gauche à droite.
+        # x -> horizontal et y vertical. Changer y fait descendre monter et en x va de gauche à droite.
         left_eye_center = (x + w // 2, y + h // 2)
         right_eye_center = (x2 + w2 // 2, y2 + h2 // 2)
         #                   Coordonnées en y gauche - y droite             /   x gauche - x droite.
